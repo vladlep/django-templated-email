@@ -20,7 +20,10 @@ def _iter_nodes(template, context, name, block_lookups):
         elif isinstance(node, ExtendsNode):
             lookups = dict([(n.name, n) for n in node.nodelist if isinstance(n, BlockNode)])
             lookups.update(block_lookups)
-            context.bind_template(template.template)
+            try:
+                context.bind_template(template.template)
+            except AttributeError:
+                context.bind_template(template)
             return _get_node(node.get_parent(context), context, name, lookups)
 
     raise BlockNotFound("Node '%s' could not be found in template." % name)
