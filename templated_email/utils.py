@@ -21,5 +21,7 @@ def _get_node(template, context=Context(), name='subject', block_lookups={}):
             lookups = dict([(n.name, n) for n in node.nodelist if isinstance(n, BlockNode)])
             lookups.update(block_lookups)
             context.bind_template(template.template)
-            return _get_node(node.get_parent(context), context, name, lookups)
+            context.__setitem__("template", template.template)
+            context.__copy__()
+            return _get_node(node.get_parent(context.__copy__()), context, name, lookups)
     raise BlockNotFound("Node '%s' could not be found in template." % name)
